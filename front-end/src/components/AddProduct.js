@@ -24,7 +24,7 @@ const AddProduct = () => {
       body: JSON.stringify(details),
     });
     product = await product.json();
-    if (product.status === 200) {
+    if (product.result === 'success') {
       navigate("/products");
     }
     if (product.status === 400) {

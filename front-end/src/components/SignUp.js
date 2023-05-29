@@ -32,7 +32,8 @@ const SignUp = () => {
       body: JSON.stringify(details),
     });
     data = await data.json();
-    if(data.message === "success"){
+    console.log(data);
+    if(data.result === "success"){
       navigate('/login');
     }
     if(data.status === 400){

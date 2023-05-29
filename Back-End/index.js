@@ -69,7 +69,7 @@ app.post("/products/product", async (req, res) => {
   await product
     .save()
     .then((item) => {
-      res.status(200).send({ message: "Product saved successfully" });
+      res.json({ result: "success" });
     })
     .catch((err) => {
       console.log("Error : " + err.message);
@@ -77,7 +77,7 @@ app.post("/products/product", async (req, res) => {
     });
 });
 
-//------------------------------------------------------------- USERS ------------------------------------------------------------
+//------------------------------------------------------ USERS -------------------------------------------------------
 
 app.get("/users", async (req, res) => {
   console.log("From API - /users");
@@ -100,16 +100,15 @@ app.get("/users/:id", async (req, res) => {
 
 app.post("/users", async (req, res) => {
   console.log("From API - /users");
-  var user = new User(req.body);
   if (req.body.password.length < 8 || req.body.password.al) {
     return res.status(400).json({ message: "Password too short" });
   }
+  var user = new User(req.body);
   await user
     .save()
     .then((item) => {
       res
-        .status(200)
-        .send({ message: "User saved successfully", result: "success" });
+        .json({ message: "User saved successfully", result: "success" });
     })
     .catch((err) => {
       console.log("Error : " + err.message);
