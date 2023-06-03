@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {useNavigate} from "react-router-dom";
+import { BASE_URL } from "../services";
 
 const AddBalance = () => {
   const user = JSON.parse(localStorage.getItem("User"));
@@ -7,6 +8,7 @@ const AddBalance = () => {
   const [amount, setamount] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const URL = BASE_URL;
 
   const addBalance = async () => {
     if (user.password === password) {
@@ -15,7 +17,7 @@ const AddBalance = () => {
         balance: user.balance,
       };
       console.log(details);
-      let data = await fetch(`http://localhost:3001/users/${user.username}`, {
+      let data = await fetch(`${URL}/users/${user.username}`, {
         method: "PUT",
         headers: {"content-type": "application/json" },
         body: JSON.stringify(details),

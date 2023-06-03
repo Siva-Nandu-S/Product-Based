@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../services";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const URL = BASE_URL;
 
   const loginData = async () => {
-    let data = await fetch(`http://localhost:3001/users/${username}`, {
+    let data = await fetch(`${URL}/users/${username}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });

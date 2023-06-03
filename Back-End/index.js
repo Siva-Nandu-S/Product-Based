@@ -4,15 +4,19 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const Product = require("./models/products");
 const User = require("./models/users");
+const Purchase = require("./models/purchase");
 const request = require("request");
 const bodyParser = require("body-parser");
+const URL = "http://localhost:3001";
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose
-  .connect("mongodb://localhost:27017/fullStack")
+  .connect(
+    "mongodb+srv://sivanandus2003:Nandu%402003@cluster0.z3yl9ox.mongodb.net/fullStack?retryWrites=true&w=majority"
+  )
   .then(() => {
     console.log("Mongo Connection established");
   })
@@ -107,8 +111,7 @@ app.post("/users", async (req, res) => {
   await user
     .save()
     .then((item) => {
-      res
-        .json({ message: "User saved successfully", result: "success" });
+      res.json({ message: "User saved successfully", result: "success" });
     })
     .catch((err) => {
       console.log("Error : " + err.message);
@@ -116,15 +119,18 @@ app.post("/users", async (req, res) => {
     });
 });
 
-app.put("/users/:id", async(req, res) => {
+app.put("/users/:id", async (req, res) => {
   console.log("From /users - PUT");
   const data = req.body;
   let balance = data.balance + data.amount;
-  let update = await User.updateOne({username: req.params.id}, {$set:{balance: balance}});
-  const details = await User.find({username: req.params.id});
+  let update = await User.updateOne(
+    { username: req.params.id },
+    { $set: { balance: balance } }
+  );
+  const details = await User.find({ username: req.params.id });
   res.json({
     newBalance: details[0].balance,
-  })
+  });
 });
 
 //-------------------------------------------- PURCHASE --------------------------------------------------
@@ -134,57 +140,56 @@ app.post("/purchase", async (req, res) => {
   const details = req.body;
 
   let data_user;
-  request(
-    `http://localhost:3001/users/${details.username}`,
-    function (error, response, body) {
-      if (!error && response.statusCode === 200) {
-        data_user = JSON.parse(body);
+  request(`${URL}/users/${details.username}`, function (error, response, body) {
+    if (!error && response.statusCode === 200) {
+      data_user = JSON.parse(body);
 
-        let data_product;
-        request(
-          `http://localhost:3001/products/product/${details.itemId}`,
-          function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-              data_product = JSON.parse(body);
+      let data_product;
+      request(
+        `${URL}/products/product/${details.itemId}`,
+        function (error, response, body) {
+          if (!error && response.statusCode === 200) {
+            data_product = JSON.parse(body);
 
-              if (data_user === null || data_product === null) {
-                res.json({
-                  result: "Not Found",
-                });
-              } else {
-                var able = false;
-                if (data_user[0].balance >= data_product.price) {
-                  able = true;
-                }
-                res.json({
-                  user: data_user[0].name,
-                  balance: data_user[0].balance,
-                  price: data_product.price,
-                  stock: data_product.stock,
-                  enough_balance: able,
-                });
+            if (data_user === null || data_product === null) {
+              res.json({
+                result: "Not Found",
+              });
+            } else {
+              var able = false;
+              if (data_user[0].balance >= data_product.price) {
+                able = true;
               }
+              res.json({
+                user: data_user[0].name,
+                balance: data_user[0].balance,
+                price: data_product.price,
+                stock: data_product.stock,
+                enough_balance: able,
+              });
             }
           }
-        );
-      }
+        }
+      );
     }
-  );
+  });
 });
 
 app.put("/purchase", async (req, res) => {
   console.log("From /purchase - PUT ");
   const details = req.body;
+  console.log(details);
   let data_user;
   request(
-    `http://localhost:3001/users/${details.username}`,
+    `${URL}/users/${details.username}`,
     async function (error, response, body) {
       if (!error && response.statusCode === 200) {
         data_user = JSON.parse(body);
+        console.log(data_user);
 
         let data_product;
         request(
-          `http://localhost:3001/products/product/${details.itemId}`,
+          `${URL}/products/product/${details.itemId}`,
           async function (error, response, body) {
             if (!error && response.statusCode === 200) {
               data_product = JSON.parse(body);
@@ -218,6 +223,6 @@ app.put("/purchase", async (req, res) => {
   );
 });
 
-app.listen(3001, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log("Listening on port 3001");
 });

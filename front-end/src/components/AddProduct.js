@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../services";
 
 const AddProduct = () => {
   const [name, setName] = useState("");
@@ -7,6 +8,7 @@ const AddProduct = () => {
   const [category, setCategory] = useState("");
   const [stock, setStock] = useState("");
   const navigate = useNavigate();
+  const URL = BASE_URL;
 
   const productAdd = async () => {
     let details = {
@@ -16,7 +18,7 @@ const AddProduct = () => {
       stock: Number(stock),
     };
     
-    let product = await fetch("http://localhost:3001/products/product", {
+    let product = await fetch(`${URL}/products/product`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

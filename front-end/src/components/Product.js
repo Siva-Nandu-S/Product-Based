@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { BASE_URL,FRONT_URL } from "../services";
 
 const Product = () => {
   const id = useParams();
   const junk = "";
+  const URL = BASE_URL;
+  const F_URL = FRONT_URL;
 
   const [product, setProduct] = useState([]);
 
@@ -12,7 +15,7 @@ const Product = () => {
   },[junk]);
 
   const getProduct = async () => {
-    let data = await fetch(`http://localhost:3001/products/product/${id.id}`, {
+    let data = await fetch(`${URL}/products/product/${id.id}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -20,7 +23,7 @@ const Product = () => {
     setProduct(data);
   };
 
-  let link = `http://localhost:3000/purchase/`;
+  let link = `${F_URL}/purchase/`;
 
   return (
     <div className="product-container">

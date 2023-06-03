@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../services";
 
 const SignUp = () => {
   const [name, setName] = useState("");
@@ -8,6 +9,7 @@ const SignUp = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const junk = 0.34;
+  const URL = BASE_URL;
 
   useEffect(() => {
     const auth = localStorage.getItem("User");
@@ -24,7 +26,7 @@ const SignUp = () => {
       balance: Number(balance),
       password: password
     }
-    let data = await fetch("http://localhost:3001/users", {
+    let data = await fetch(`${URL}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

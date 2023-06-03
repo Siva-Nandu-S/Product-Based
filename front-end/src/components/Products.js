@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { BASE_URL, FRONT_URL } from "../services";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const junk = "";
-
+  const URL = BASE_URL;
+  const F_URL = FRONT_URL;
+  console.log(process.env.REACT_APP_BASE_URL);
   useEffect(() => {
     getProducts();
   },[junk]);
 
   const getProducts = async () => {
-    let data = await fetch("http://localhost:3001/products", {
+    let data = await fetch(`${URL}/products`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -17,7 +20,7 @@ const Products = () => {
     setProducts(data);
   };
 
-  let link = `http://localhost:3000/products/product/`;
+  let link = `${F_URL}/products/product/`;
 
   return (
     <div className="products">
